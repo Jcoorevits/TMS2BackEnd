@@ -1,9 +1,9 @@
 ﻿namespace TMS2.DAL.Models;
 
-public class PompLog
+public class PumpLog
 {
     public int id { get; set; }
-    public Pomp pompId { get; set; }
+    public Pump pompId { get; set; }
     public User userId { get; set; }
     public DateTime time { get; set; }
     public int outputValue { get; set; }

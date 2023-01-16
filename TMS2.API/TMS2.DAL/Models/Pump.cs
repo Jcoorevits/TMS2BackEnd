@@ -1,6 +1,6 @@
 ﻿namespace TMS2.DAL.Models;
 
-public class Pomp
+public class Pump
 {
     public int id { get; set; }
     public int siteId { get; set; }
