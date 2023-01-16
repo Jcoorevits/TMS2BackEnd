@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMS2.API", "TMS2.API\TMS2.API.csproj", "{7A0D0E59-DB52-4F2C-8149-0778FA5D6F96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMS2.DAL", "TMS2.DAL\TMS2.DAL.csproj", "{A6045ECE-E009-44F0-9FA5-13987F95EB59}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7A0D0E59-DB52-4F2C-8149-0778FA5D6F96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A0D0E59-DB52-4F2C-8149-0778FA5D6F96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A0D0E59-DB52-4F2C-8149-0778FA5D6F96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A0D0E59-DB52-4F2C-8149-0778FA5D6F96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6045ECE-E009-44F0-9FA5-13987F95EB59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6045ECE-E009-44F0-9FA5-13987F95EB59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6045ECE-E009-44F0-9FA5-13987F95EB59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6045ECE-E009-44F0-9FA5-13987F95EB59}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
