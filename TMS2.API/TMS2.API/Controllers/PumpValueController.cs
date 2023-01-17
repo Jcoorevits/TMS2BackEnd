@@ -12,55 +12,55 @@ namespace TMS2.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SiteController : ControllerBase
+    public class PumpValueController : ControllerBase
     {
         private readonly Tms2Context _context;
 
-        public SiteController(Tms2Context context)
+        public PumpValueController(Tms2Context context)
         {
             _context = context;
         }
 
-        // GET: api/Site
+        // GET: api/PumpValue
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Site>>> GetSites()
+        public async Task<ActionResult<IEnumerable<PumpValue>>> GetPumpValues()
         {
-          if (_context.Sites == null)
+          if (_context.PumpValues == null)
           {
               return NotFound();
           }
-            return await _context.Sites.ToListAsync();
+            return await _context.PumpValues.ToListAsync();
         }
 
-        // GET: api/Site/5
+        // GET: api/PumpValue/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Site>> GetSite(long id)
+        public async Task<ActionResult<PumpValue>> GetPumpValue(long id)
         {
-          if (_context.Sites == null)
+          if (_context.PumpValues == null)
           {
               return NotFound();
           }
-            var site = await _context.Sites.FindAsync(id);
+            var pumpValue = await _context.PumpValues.FindAsync(id);
 
-            if (site == null)
+            if (pumpValue == null)
             {
                 return NotFound();
             }
 
-            return site;
+            return pumpValue;
         }
 
-        // PUT: api/Site/5
+        // PUT: api/PumpValue/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSite(long id, Site site)
+        public async Task<IActionResult> PutPumpValue(long id, PumpValue pumpValue)
         {
-            if (id != site.Id)
+            if (id != pumpValue.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(site).State = EntityState.Modified;
+            _context.Entry(pumpValue).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +68,7 @@ namespace TMS2.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SiteExists(id))
+                if (!PumpValueExists(id))
                 {
                     return NotFound();
                 }
@@ -81,44 +81,44 @@ namespace TMS2.API.Controllers
             return NoContent();
         }
 
-        // POST: api/Site
+        // POST: api/PumpValue
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Site>> PostSite(Site site)
+        public async Task<ActionResult<PumpValue>> PostPumpValue(PumpValue pumpValue)
         {
-          if (_context.Sites == null)
+          if (_context.PumpValues == null)
           {
-              return Problem("Entity set 'Tms2Context.Sites'  is null.");
+              return Problem("Entity set 'Tms2Context.PumpValues'  is null.");
           }
-            _context.Sites.Add(site);
+            _context.PumpValues.Add(pumpValue);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSite", new { id = site.Id }, site);
+            return CreatedAtAction("GetPumpValue", new { id = pumpValue.Id }, pumpValue);
         }
 
-        // DELETE: api/Site/5
+        // DELETE: api/PumpValue/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSite(long id)
+        public async Task<IActionResult> DeletePumpValue(long id)
         {
-            if (_context.Sites == null)
+            if (_context.PumpValues == null)
             {
                 return NotFound();
             }
-            var site = await _context.Sites.FindAsync(id);
-            if (site == null)
+            var pumpValue = await _context.PumpValues.FindAsync(id);
+            if (pumpValue == null)
             {
                 return NotFound();
             }
 
-            _context.Sites.Remove(site);
+            _context.PumpValues.Remove(pumpValue);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool SiteExists(long id)
+        private bool PumpValueExists(long id)
         {
-            return (_context.Sites?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.PumpValues?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

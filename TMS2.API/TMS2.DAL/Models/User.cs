@@ -7,5 +7,5 @@ public class User
     public int Phone { get; set; }
     public string Email { get; set; }
     public bool IsAdmin { get; set; }
-    public List<PumpLog>? PumpLogs { get; set; }
+    public ICollection<PumpLog>? PumpLogs { get; set; }
 }

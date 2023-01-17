@@ -12,55 +12,55 @@ namespace TMS2.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SiteController : ControllerBase
+    public class SensorValueController : ControllerBase
     {
         private readonly Tms2Context _context;
 
-        public SiteController(Tms2Context context)
+        public SensorValueController(Tms2Context context)
         {
             _context = context;
         }
 
-        // GET: api/Site
+        // GET: api/SensorValue
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Site>>> GetSites()
+        public async Task<ActionResult<IEnumerable<SensorValue>>> GetSensorValues()
         {
-          if (_context.Sites == null)
+          if (_context.SensorValues == null)
           {
               return NotFound();
           }
-            return await _context.Sites.ToListAsync();
+            return await _context.SensorValues.ToListAsync();
         }
 
-        // GET: api/Site/5
+        // GET: api/SensorValue/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Site>> GetSite(long id)
+        public async Task<ActionResult<SensorValue>> GetSensorValue(long id)
         {
-          if (_context.Sites == null)
+          if (_context.SensorValues == null)
           {
               return NotFound();
           }
-            var site = await _context.Sites.FindAsync(id);
+            var sensorValue = await _context.SensorValues.FindAsync(id);
 
-            if (site == null)
+            if (sensorValue == null)
             {
                 return NotFound();
             }
 
-            return site;
+            return sensorValue;
         }
 
-        // PUT: api/Site/5
+        // PUT: api/SensorValue/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSite(long id, Site site)
+        public async Task<IActionResult> PutSensorValue(long id, SensorValue sensorValue)
         {
-            if (id != site.Id)
+            if (id != sensorValue.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(site).State = EntityState.Modified;
+            _context.Entry(sensorValue).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +68,7 @@ namespace TMS2.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SiteExists(id))
+                if (!SensorValueExists(id))
                 {
                     return NotFound();
                 }
@@ -81,44 +81,44 @@ namespace TMS2.API.Controllers
             return NoContent();
         }
 
-        // POST: api/Site
+        // POST: api/SensorValue
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Site>> PostSite(Site site)
+        public async Task<ActionResult<SensorValue>> PostSensorValue(SensorValue sensorValue)
         {
-          if (_context.Sites == null)
+          if (_context.SensorValues == null)
           {
-              return Problem("Entity set 'Tms2Context.Sites'  is null.");
+              return Problem("Entity set 'Tms2Context.SensorValues'  is null.");
           }
-            _context.Sites.Add(site);
+            _context.SensorValues.Add(sensorValue);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSite", new { id = site.Id }, site);
+            return CreatedAtAction("GetSensorValue", new { id = sensorValue.Id }, sensorValue);
         }
 
-        // DELETE: api/Site/5
+        // DELETE: api/SensorValue/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSite(long id)
+        public async Task<IActionResult> DeleteSensorValue(long id)
         {
-            if (_context.Sites == null)
+            if (_context.SensorValues == null)
             {
                 return NotFound();
             }
-            var site = await _context.Sites.FindAsync(id);
-            if (site == null)
+            var sensorValue = await _context.SensorValues.FindAsync(id);
+            if (sensorValue == null)
             {
                 return NotFound();
             }
 
-            _context.Sites.Remove(site);
+            _context.SensorValues.Remove(sensorValue);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool SiteExists(long id)
+        private bool SensorValueExists(long id)
         {
-            return (_context.Sites?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.SensorValues?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
