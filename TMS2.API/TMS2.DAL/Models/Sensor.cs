@@ -2,9 +2,10 @@
 
 public class Sensor
 {
-    public int id { get; set; }
-    public int siteId { get; set; }
-    public DateTime time { get; set; }
-    public int sensorValue { get; set; }
-    public Boolean isDefective { get; set; }
+    public long Id { get; set; }
+    public Site? Site { get; set; }
+    public DateTime Time { get; set; }
+    public float SensorValue { get; set; }
+    public bool IsDefective { get; set; }
+    public List<SensorLog>? SensorLogs { get; set; }
 }

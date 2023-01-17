@@ -2,11 +2,11 @@
 
 public class PumpLog
 {
-    public int id { get; set; }
-    public Pump pompId { get; set; }
-    public User userId { get; set; }
-    public DateTime time { get; set; }
-    public int outputValue { get; set; }
-    public int inputValue { get; set; }
-    public Boolean isDefective { get; set; }
+    public long Id { get; set; }
+    public Pump PumpId { get; set; }
+    public User UserId { get; set; }
+    public DateTime Time { get; set; }
+    public int OutputValue { get; set; }
+    public int InputValue { get; set; }
+    public bool IsDefective { get; set; }
 }

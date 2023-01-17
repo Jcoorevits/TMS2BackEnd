@@ -2,13 +2,13 @@
 
 public class Site
 {
-    public int id { get; set; }
-    public string name { get; set; }
-    public string address { get; set; }
-    public string siteManager { get; set; }
-    public int siteManagerNbr { get; set; }
-    public int sensorDepth { get; set; }
-    public int drainageDepth { get; set; }
-    
-    
+    public long Id { get; set; }
+    public string Name { get; set; }
+    public string Address { get; set; }
+    public string SiteManager { get; set; }
+    public int SiteManagerNbr { get; set; }
+    public int SensorDepth { get; set; }
+    public int DrainageDepth { get; set; }
+    public List<Sensor>? Sensors { get; set; }
+    public List<Pump>? Pumps { get; set; }
 }

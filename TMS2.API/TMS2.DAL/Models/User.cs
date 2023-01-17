@@ -2,9 +2,10 @@
 
 public class User
 {
-    public int id { get; set; }
-    public string name { get; set; }
-    public int phone { get; set; }
-    public string email { get; set; }
-    public Boolean isAdmin { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int Phone { get; set; }
+    public string Email { get; set; }
+    public bool IsAdmin { get; set; }
+    public List<PumpLog>? PumpLogs { get; set; }
 }
