@@ -5,6 +5,7 @@ namespace TMS2.DAL.Models;
 public class Sensor
 {
     public long Id { get; set; }
+    public string Name { get; set; }
     [ForeignKey("Site")]
     public long? SiteId { get; set; }
     public long? SensorValueId { get; set; }

@@ -35,14 +35,14 @@ namespace TMS2.DAL.Data
             modelBuilder.Entity<Site>().ToTable("Site");
             modelBuilder.Entity<User>().ToTable("User");
 
-            modelBuilder.Entity<Pump>().HasData(new Pump {Id = 1, SiteId = 1, InputValue = 1, IsDefective = false},
-                new Pump {Id = 2, SiteId = 1, InputValue = 1.0, IsDefective = false},
-                new Pump {Id = 3, SiteId = 1, InputValue = 1.0, IsDefective = false},
-                new Pump {Id = 4, SiteId = 1, InputValue = 1.0, IsDefective = false});
-            modelBuilder.Entity<Sensor>().HasData(new Sensor {Id = 1, SiteId = 1, IsDefective = false},
-                new Sensor {Id = 2, SiteId = 1, IsDefective = false},
-                new Sensor {Id = 3, SiteId = 1, IsDefective = false},
-                new Sensor {Id = 4, SiteId = 1, IsDefective = false});
+            modelBuilder.Entity<Pump>().HasData(new Pump {Id = 1, Name = "Pump 1" ,SiteId = 1, InputValue = 1, IsDefective = false},
+                new Pump {Id = 2,Name = "Pump 2" , SiteId = 1, InputValue = 1.0, IsDefective = false},
+                new Pump {Id = 3,Name = "Pump 3" , SiteId = 1, InputValue = 1.0, IsDefective = false},
+                new Pump {Id = 4,Name = "Pump 4" , SiteId = 1, InputValue = 1.0, IsDefective = false});
+            modelBuilder.Entity<Sensor>().HasData(new Sensor {Id = 1,Name = "Sensor 1" , SiteId = 1, IsDefective = false},
+                new Sensor {Id = 2,Name = "Sensor 2" , SiteId = 1, IsDefective = false},
+                new Sensor {Id = 3,Name = "Sensor 3" , SiteId = 1, IsDefective = false},
+                new Sensor {Id = 4,Name = "Sensor 4" , SiteId = 1, IsDefective = false});
             modelBuilder.Entity<Site>().HasData(new Site
             {
                 Id = 1, Name = "Test Site", Address = "Antwerpen", SiteManager = "Frederick", SensorDepth = 10.5,
