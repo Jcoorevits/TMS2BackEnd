@@ -29,7 +29,11 @@ namespace TMS2.API.Controllers
           {
               return NotFound();
           }
-            return await _context.Sensors.ToListAsync();
+            // return await _context.Sensors.ToListAsync();
+            
+            return await _context.Sensors.Include(x => x.SensorValues)
+                .Include(x => x.SensorLogs)
+                .ToListAsync();
         }
 
         // GET: api/Sensor/5
@@ -40,7 +44,9 @@ namespace TMS2.API.Controllers
           {
               return NotFound();
           }
-            var sensor = await _context.Sensors.FindAsync(id);
+
+          var sensor = await _context.Sensors.Include(x => x.SensorValues).Include(x => x.SensorLogs)
+              .FirstOrDefaultAsync(x => x.Id == id);
 
             if (sensor == null)
             {

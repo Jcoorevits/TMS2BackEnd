@@ -25,22 +25,25 @@ namespace TMS2.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Site>>> GetSites()
         {
-          if (_context.Sites == null)
-          {
-              return NotFound();
-          }
-            return await _context.Sites.ToListAsync();
+            if (_context.Sites == null)
+            {
+                return NotFound();
+            }
+
+            return await _context.Sites.Include(x => x.Sensors).Include(x => x.Pumps).ToListAsync();
         }
 
         // GET: api/Site/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Site>> GetSite(long id)
         {
-          if (_context.Sites == null)
-          {
-              return NotFound();
-          }
-            var site = await _context.Sites.FindAsync(id);
+            if (_context.Sites == null)
+            {
+                return NotFound();
+            }
+
+            var site = await _context.Sites.Include(x => x.Sensors).Include(x => x.Pumps)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (site == null)
             {
@@ -86,14 +89,15 @@ namespace TMS2.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Site>> PostSite(Site site)
         {
-          if (_context.Sites == null)
-          {
-              return Problem("Entity set 'Tms2Context.Sites'  is null.");
-          }
+            if (_context.Sites == null)
+            {
+                return Problem("Entity set 'Tms2Context.Sites'  is null.");
+            }
+
             _context.Sites.Add(site);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSite", new { id = site.Id }, site);
+            return CreatedAtAction("GetSite", new {id = site.Id}, site);
         }
 
         // DELETE: api/Site/5
@@ -104,6 +108,7 @@ namespace TMS2.API.Controllers
             {
                 return NotFound();
             }
+
             var site = await _context.Sites.FindAsync(id);
             if (site == null)
             {

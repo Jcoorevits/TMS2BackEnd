@@ -8,7 +8,8 @@ public class Sensor
     public string Name { get; set; }
     [ForeignKey("Site")]
     public long? SiteId { get; set; }
-    public long? SensorValueId { get; set; }
+    
+    public ICollection<SensorValue>? SensorValues { get; set; }
     public bool IsDefective { get; set; }
     public virtual ICollection<SensorLog>? SensorLogs { get; set; }
 }

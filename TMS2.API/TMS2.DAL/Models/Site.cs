@@ -6,7 +6,7 @@ public class Site
     public string Name { get; set; }
     public string Address { get; set; }
     public string SiteManager { get; set; }
-    public int SiteManagerNbr { get; set; }
+    public string SiteManagerNbr { get; set; }
     public double SensorDepth { get; set; }
     public double DrainageDepth { get; set; }
     public ICollection<Sensor>? Sensors { get; set; }

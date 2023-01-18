@@ -25,22 +25,25 @@ namespace TMS2.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Pump>>> GetPumps()
         {
-          if (_context.Pumps == null)
-          {
-              return NotFound();
-          }
-            return await _context.Pumps.ToListAsync();
+            if (_context.Pumps == null)
+            {
+                return NotFound();
+            }
+
+            return await _context.Pumps.Include(x => x.PumpValues).Include(x => x.PumpLogs).ToListAsync();
         }
 
         // GET: api/Pump/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Pump>> GetPump(long id)
         {
-          if (_context.Pumps == null)
-          {
-              return NotFound();
-          }
-            var pump = await _context.Pumps.FindAsync(id);
+            if (_context.Pumps == null)
+            {
+                return NotFound();
+            }
+
+            var pump = await _context.Pumps.Include(x => x.PumpValues).Include(x => x.PumpLogs)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (pump == null)
             {
@@ -86,14 +89,15 @@ namespace TMS2.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Pump>> PostPump(Pump pump)
         {
-          if (_context.Pumps == null)
-          {
-              return Problem("Entity set 'Tms2Context.Pumps'  is null.");
-          }
+            if (_context.Pumps == null)
+            {
+                return Problem("Entity set 'Tms2Context.Pumps'  is null.");
+            }
+
             _context.Pumps.Add(pump);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPump", new { id = pump.Id }, pump);
+            return CreatedAtAction("GetPump", new {id = pump.Id}, pump);
         }
 
         // DELETE: api/Pump/5
@@ -104,6 +108,7 @@ namespace TMS2.API.Controllers
             {
                 return NotFound();
             }
+
             var pump = await _context.Pumps.FindAsync(id);
             if (pump == null)
             {
