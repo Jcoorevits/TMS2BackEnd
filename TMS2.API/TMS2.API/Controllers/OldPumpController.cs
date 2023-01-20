@@ -12,59 +12,58 @@ namespace TMS2.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SiteController : ControllerBase
+    public class OldPumpController : ControllerBase
     {
         private readonly Tms2Context _context;
 
-        public SiteController(Tms2Context context)
+        public OldPumpController(Tms2Context context)
         {
             _context = context;
         }
 
-        // GET: api/Site
+        // GET: api/OldPump
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Site>>> GetSites()
+        public async Task<ActionResult<IEnumerable<OldPump>>> GetOldPumps()
         {
-            if (_context.Sites == null)
+            if (_context.OldPumps == null)
             {
                 return NotFound();
             }
 
-            return await _context.Sites.Include(x => x.Sensors).Include(x => x.Pumps).Include(x => x.OldPumps)
-                .ToListAsync();
+            return await _context.OldPumps.Include(x => x.OldPumpValues).Include(x => x.PumpLogs).ToListAsync();
         }
 
-        // GET: api/Site/5
+        // GET: api/OldPump/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Site>> GetSite(long id)
+        public async Task<ActionResult<OldPump>> GetOldPump(long id)
         {
-            if (_context.Sites == null)
+            if (_context.OldPumps == null)
             {
                 return NotFound();
             }
 
-            var site = await _context.Sites.Include(x => x.Sensors).Include(x => x.Pumps).Include(x => x.OldPumps)
+            var oldPump = await _context.OldPumps.Include(x => x.OldPumpValues).Include(x => x.PumpLogs)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (site == null)
+            if (oldPump == null)
             {
                 return NotFound();
             }
 
-            return site;
+            return oldPump;
         }
 
-        // PUT: api/Site/5
+        // PUT: api/OldPump/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSite(long id, Site site)
+        public async Task<IActionResult> PutOldPump(long id, OldPump oldPump)
         {
-            if (id != site.Id)
+            if (id != oldPump.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(site).State = EntityState.Modified;
+            _context.Entry(oldPump).State = EntityState.Modified;
 
             try
             {
@@ -72,7 +71,7 @@ namespace TMS2.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SiteExists(id))
+                if (!OldPumpExists(id))
                 {
                     return NotFound();
                 }
@@ -85,47 +84,46 @@ namespace TMS2.API.Controllers
             return NoContent();
         }
 
-        // POST: api/Site
+        // POST: api/OldPump
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Site>> PostSite(Site site)
+        public async Task<ActionResult<OldPump>> PostOldPump(OldPump oldPump)
         {
-            if (_context.Sites == null)
+            if (_context.OldPumps == null)
             {
-                return Problem("Entity set 'Tms2Context.Sites'  is null.");
+                return Problem("Entity set 'Tms2Context.OldPumps'  is null.");
             }
 
-            _context.Sites.Add(site);
+            _context.OldPumps.Add(oldPump);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSite", new {id = site.Id}, site);
+            return CreatedAtAction("GetOldPump", new {id = oldPump.Id}, oldPump);
         }
 
-        // DELETE: api/Site/5
+        // DELETE: api/OldPump/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSite(long id)
+        public async Task<IActionResult> DeleteOldPump(long id)
         {
-            if (_context.Sites == null)
+            if (_context.OldPumps == null)
             {
                 return NotFound();
             }
 
-            var site = await _context.Sites.FindAsync(id);
-            if (site == null)
+            var oldPump = await _context.OldPumps.FindAsync(id);
+            if (oldPump == null)
             {
                 return NotFound();
             }
-            
 
-            _context.Sites.Remove(site);
+            _context.OldPumps.Remove(oldPump);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool SiteExists(long id)
+        private bool OldPumpExists(long id)
         {
-            return (_context.Sites?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.OldPumps?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

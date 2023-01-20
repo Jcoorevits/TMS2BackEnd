@@ -11,4 +11,5 @@ public class Site
     public double DrainageDepth { get; set; }
     public ICollection<Sensor>? Sensors { get; set; }
     public ICollection<Pump>? Pumps { get; set; }
+    public ICollection<OldPump>? OldPumps { get; set; }
 }
