@@ -6,10 +6,11 @@ public class Sensor
 {
     public long Id { get; set; }
     public string Name { get; set; }
-    [ForeignKey("Site")]
-    public long? SiteId { get; set; }
-    
+    [ForeignKey("Site")] public long? SiteId { get; set; }
+
     public ICollection<SensorValue>? SensorValues { get; set; }
     public bool IsDefective { get; set; }
     public virtual ICollection<SensorLog>? SensorLogs { get; set; }
+    public ICollection<Pump>? Pumps { get; set; }
+    public ICollection<OldPump>? OldPumps { get; set; }
 }

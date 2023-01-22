@@ -5,7 +5,8 @@ namespace TMS2.DAL.Models;
 public class PumpLog
 {
     public long Id { get; set; }
-    [ForeignKey("Pump")] public long PumpId { get; set; }
+    [ForeignKey("OldPump")] public long? OldPumpId { get; set; }
+    [ForeignKey("Pump")] public long? PumpId { get; set; }
     [ForeignKey("User")] public long? UserId { get; set; }
     public DateTime Date { get; set; }
     public int OutputValue { get; set; }

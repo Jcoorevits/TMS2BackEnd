@@ -6,7 +6,7 @@ public class Pump
 {
     public long Id { get; set; }
     public string Name { get; set; }
-    [ForeignKey("Site")] public long? SiteId { get; set; }
+    [ForeignKey("Sensor")] public long? SensorId { get; set; }
     public double InputValue { get; set; }
     public ICollection<PumpValue>? PumpValues { get; set; }
     public bool IsDefective { get; set; }

@@ -30,7 +30,8 @@ namespace TMS2.API.Controllers
                 return NotFound();
             }
 
-            return await _context.Sites.Include(x => x.Sensors).Include(x => x.Pumps).Include(x => x.OldPumps)
+            return await _context.Sites.Include(x => x.Sensors).ThenInclude(x => x.Pumps)
+                .Include(x => x.Sensors).ThenInclude(x => x.OldPumps)
                 .ToListAsync();
         }
 
@@ -43,7 +44,8 @@ namespace TMS2.API.Controllers
                 return NotFound();
             }
 
-            var site = await _context.Sites.Include(x => x.Sensors).Include(x => x.Pumps).Include(x => x.OldPumps)
+            var site = await _context.Sites.Include(x => x.Sensors).ThenInclude(x => x.Pumps)
+                .Include(x => x.Sensors).ThenInclude(x => x.OldPumps)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (site == null)
@@ -115,7 +117,7 @@ namespace TMS2.API.Controllers
             {
                 return NotFound();
             }
-            
+
 
             _context.Sites.Remove(site);
             await _context.SaveChangesAsync();

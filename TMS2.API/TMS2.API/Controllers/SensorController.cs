@@ -25,14 +25,14 @@ namespace TMS2.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Sensor>>> GetSensors()
         {
-          if (_context.Sensors == null)
-          {
-              return NotFound();
-          }
+            if (_context.Sensors == null)
+            {
+                return NotFound();
+            }
             // return await _context.Sensors.ToListAsync();
-            
+
             return await _context.Sensors.Include(x => x.SensorValues)
-                .Include(x => x.SensorLogs)
+                .Include(x => x.SensorLogs).Include(x => x.Pumps).Include(x => x.OldPumps)
                 .ToListAsync();
         }
 
@@ -40,13 +40,14 @@ namespace TMS2.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Sensor>> GetSensor(int id)
         {
-          if (_context.Sensors == null)
-          {
-              return NotFound();
-          }
+            if (_context.Sensors == null)
+            {
+                return NotFound();
+            }
 
-          var sensor = await _context.Sensors.Include(x => x.SensorValues).Include(x => x.SensorLogs)
-              .FirstOrDefaultAsync(x => x.Id == id);
+            var sensor = await _context.Sensors.Include(x => x.SensorValues).Include(x => x.SensorLogs)
+                .Include(x => x.Pumps).Include(x => x.OldPumps)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (sensor == null)
             {
@@ -92,14 +93,15 @@ namespace TMS2.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Sensor>> PostSensor(Sensor sensor)
         {
-          if (_context.Sensors == null)
-          {
-              return Problem("Entity set 'Tms2Context.Sensors'  is null.");
-          }
+            if (_context.Sensors == null)
+            {
+                return Problem("Entity set 'Tms2Context.Sensors'  is null.");
+            }
+
             _context.Sensors.Add(sensor);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSensor", new { id = sensor.Id }, sensor);
+            return CreatedAtAction("GetSensor", new {id = sensor.Id}, sensor);
         }
 
         // DELETE: api/Sensor/5
@@ -110,6 +112,7 @@ namespace TMS2.API.Controllers
             {
                 return NotFound();
             }
+
             var sensor = await _context.Sensors.FindAsync(id);
             if (sensor == null)
             {

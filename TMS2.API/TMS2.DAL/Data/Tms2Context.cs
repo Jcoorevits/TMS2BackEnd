@@ -40,8 +40,8 @@ namespace TMS2.DAL.Data
             modelBuilder.Entity<User>().ToTable("User");
 
             modelBuilder.Entity<Pump>().HasData(
-                new Pump {Id = 1, Name = "Pump 1", SiteId = 1, InputValue = 1.0, IsDefective = false},
-                new Pump {Id = 2, Name = "Pump 2", SiteId = 1, InputValue = 1.0, IsDefective = false},
+                new Pump {Id = 1, Name = "Pump 1", SensorId = 1, InputValue = 1.0, IsDefective = false},
+                new Pump {Id = 2, Name = "Pump 2", SensorId = 1, InputValue = 1.0, IsDefective = false},
                 new Pump {Id = 3, Name = "Pump 3", InputValue = 1.0, IsDefective = false},
                 new Pump {Id = 4, Name = "Pump 4", InputValue = 1.0, IsDefective = false},
                 new Pump {Id = 5, Name = "Pump 5", InputValue = 1.0, IsDefective = false},
@@ -49,8 +49,8 @@ namespace TMS2.DAL.Data
                 new Pump {Id = 7, Name = "Pump 7", InputValue = 1.0, IsDefective = false},
                 new Pump {Id = 8, Name = "Pump 8", InputValue = 1.0, IsDefective = false});
             modelBuilder.Entity<OldPump>().HasData(
-                new OldPump {Id = 1, Name = "Old Pump 1", InputValue = 0, IsDefective = false},
-                new OldPump {Id = 2, Name = "Old Pump 2", InputValue = 0, IsDefective = false},
+                new OldPump {Id = 1, Name = "Old Pump 1", SensorId = 2, InputValue = 0, IsDefective = false},
+                new OldPump {Id = 2, Name = "Old Pump 2", SensorId = 2, InputValue = 0, IsDefective = false},
                 new OldPump {Id = 3, Name = "Old Pump 3", InputValue = 0, IsDefective = false},
                 new OldPump {Id = 4, Name = "Old Pump 4", InputValue = 0, IsDefective = false});
 
