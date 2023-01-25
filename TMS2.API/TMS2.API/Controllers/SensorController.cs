@@ -56,7 +56,10 @@ namespace TMS2.API.Controllers
 
             return sensor;
         }
-
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<Sensor> GetSensorById(long id) => await _context.Sensors.Include(x => x.SensorValues).Include(x => x.SensorLogs)
+            .Include(x => x.Pumps).Include(x => x.OldPumps)
+            .FirstOrDefaultAsync(x => x.Id == id);
         // PUT: api/Sensor/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

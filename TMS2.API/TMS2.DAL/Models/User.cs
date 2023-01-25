@@ -8,4 +8,5 @@ public class User
     public string Email { get; set; }
     public bool IsAdmin { get; set; }
     public ICollection<PumpLog>? PumpLogs { get; set; }
+    public ICollection<OldPumpLog>? OldPumpLogs { get; set; }
 }

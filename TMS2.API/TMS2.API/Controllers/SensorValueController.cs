@@ -25,10 +25,11 @@ namespace TMS2.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SensorValue>>> GetSensorValues()
         {
-          if (_context.SensorValues == null)
-          {
-              return NotFound();
-          }
+            if (_context.SensorValues == null)
+            {
+                return NotFound();
+            }
+
             return await _context.SensorValues.ToListAsync();
         }
 
@@ -36,10 +37,11 @@ namespace TMS2.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<SensorValue>> GetSensorValue(long id)
         {
-          if (_context.SensorValues == null)
-          {
-              return NotFound();
-          }
+            if (_context.SensorValues == null)
+            {
+                return NotFound();
+            }
+
             var sensorValue = await _context.SensorValues.FindAsync(id);
 
             if (sensorValue == null)
@@ -86,14 +88,61 @@ namespace TMS2.API.Controllers
         [HttpPost]
         public async Task<ActionResult<SensorValue>> PostSensorValue(SensorValue sensorValue)
         {
-          if (_context.SensorValues == null)
-          {
-              return Problem("Entity set 'Tms2Context.SensorValues'  is null.");
-          }
+            if (_context.SensorValues == null)
+            {
+                return Problem("Entity set 'Tms2Context.SensorValues'  is null.");
+            }
+
+            var sensorController = new SensorController(_context);
+            var sensorLogController = new SensorLogController(_context);
+            var sensorLog = new SensorLog();
+            var sensor = await sensorController.GetSensorById(sensorValue.SensorId);
+            double sum = 0;
+            long sensorValueId = 0;
+            int calibration = sensor.Calibration;
+            if (sensor.Calibration > 1)
+            {
+                calibration -= 1;
+                sensor.Calibration = calibration;
+                await sensorController.PutSensor(Convert.ToInt32(sensorValue.Id), sensor);
+                _context.SensorValues.Add(sensorValue);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetSensorValue", new {id = sensorValue.Id}, sensorValue);
+            }
+
+            if (sensor.SensorValues != null && sensor.SensorValues.Count > 2)
+
+            {
+                var sensorValueList = sensor.SensorValues.OrderByDescending(x => x.Id).Take(4);
+                foreach (var value in sensorValueList)
+                {
+                    if (sensorValueId < value.Id)
+                    {
+                        sensorValueId = value.Id;
+                    }
+
+                    sum += value.Value;
+                }
+
+                var average = sum / sensorValueList.Count();
+                sensorValue.Average = average;
+
+                if (sensorValue.Value > average * 1.5 || sensorValue.Value < average * 0.5)
+                {
+                    sensor.Calibration = 10;
+                    await sensorController.PutSensor(Convert.ToInt32(sensorValue.Id), sensor);
+                    sensorLog.SensorId = sensor.Id;
+                    sensorLog.Date = DateTime.Now;
+                    sensorLog.Error = $"Error detected in sensor {sensor.Id}";
+                    sensorLog.IsDefective = true;
+                    sensorLog.SensorValueId = sensorValueId + 1;
+                    await sensorLogController.PostSensorLog(sensorLog);
+                }
+            }
+
             _context.SensorValues.Add(sensorValue);
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetSensorValue", new { id = sensorValue.Id }, sensorValue);
+            return CreatedAtAction("GetSensorValue", new {id = sensorValue.Id}, sensorValue);
         }
 
         // DELETE: api/SensorValue/5
@@ -104,6 +153,7 @@ namespace TMS2.API.Controllers
             {
                 return NotFound();
             }
+
             var sensorValue = await _context.SensorValues.FindAsync(id);
             if (sensorValue == null)
             {

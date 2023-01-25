@@ -25,10 +25,11 @@ namespace TMS2.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PumpValue>>> GetPumpValues()
         {
-          if (_context.PumpValues == null)
-          {
-              return NotFound();
-          }
+            if (_context.PumpValues == null)
+            {
+                return NotFound();
+            }
+
             return await _context.PumpValues.ToListAsync();
         }
 
@@ -36,10 +37,11 @@ namespace TMS2.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PumpValue>> GetPumpValue(long id)
         {
-          if (_context.PumpValues == null)
-          {
-              return NotFound();
-          }
+            if (_context.PumpValues == null)
+            {
+                return NotFound();
+            }
+
             var pumpValue = await _context.PumpValues.FindAsync(id);
 
             if (pumpValue == null)
@@ -86,14 +88,25 @@ namespace TMS2.API.Controllers
         [HttpPost]
         public async Task<ActionResult<PumpValue>> PostPumpValue(PumpValue pumpValue)
         {
-          if (_context.PumpValues == null)
-          {
-              return Problem("Entity set 'Tms2Context.PumpValues'  is null.");
-          }
+            if (_context.PumpValues == null)
+            {
+                return Problem("Entity set 'Tms2Context.PumpValues'  is null.");
+            }
+
+            if (pumpValue.Value > 40.0)
+            {
+                var pumpController = new PumpController(_context);
+                var pump = new Pump();
+                pump = await pumpController.GetPumpById(pumpValue.PumpId);
+                pump.InputValue = 0.0;
+                pump.IsDefective = true;
+                await pumpController.PutPump(pump.Id, pump);
+            }
+
             _context.PumpValues.Add(pumpValue);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPumpValue", new { id = pumpValue.Id }, pumpValue);
+            return CreatedAtAction("GetPumpValue", new {id = pumpValue.Id}, pumpValue);
         }
 
         // DELETE: api/PumpValue/5
@@ -104,6 +117,7 @@ namespace TMS2.API.Controllers
             {
                 return NotFound();
             }
+
             var pumpValue = await _context.PumpValues.FindAsync(id);
             if (pumpValue == null)
             {

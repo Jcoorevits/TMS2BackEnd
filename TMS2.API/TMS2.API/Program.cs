@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Prediction.DAL.Data;
 using TMS2.DAL.Data;
 
 var builder = WebApplication.CreateBuilder(args);

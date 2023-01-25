@@ -52,6 +52,10 @@ namespace TMS2.API.Controllers
 
             return pump;
         }
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<Pump> GetPumpById(long id) => await _context.Pumps.Include(x => x.PumpValues)
+            .Include(x => x.PumpLogs)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         // PUT: api/Pump/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

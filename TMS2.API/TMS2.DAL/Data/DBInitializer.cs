@@ -2,7 +2,7 @@
 using TMS2.DAL.Models;
 using TMS2.DAL.Data;
 
-namespace Prediction.DAL.Data;
+namespace TMS2.DAL.Data;
 
 public class DBInitializer
 {

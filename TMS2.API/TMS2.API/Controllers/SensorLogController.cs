@@ -25,10 +25,11 @@ namespace TMS2.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SensorLog>>> GetSensorLogs()
         {
-          if (_context.SensorLogs == null)
-          {
-              return NotFound();
-          }
+            if (_context.SensorLogs == null)
+            {
+                return NotFound();
+            }
+
             return await _context.SensorLogs.ToListAsync();
         }
 
@@ -36,10 +37,11 @@ namespace TMS2.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<SensorLog>> GetSensorLog(long id)
         {
-          if (_context.SensorLogs == null)
-          {
-              return NotFound();
-          }
+            if (_context.SensorLogs == null)
+            {
+                return NotFound();
+            }
+
             var sensorLog = await _context.SensorLogs.FindAsync(id);
 
             if (sensorLog == null)
@@ -49,6 +51,7 @@ namespace TMS2.API.Controllers
 
             return sensorLog;
         }
+        
 
         // PUT: api/SensorLog/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -86,14 +89,15 @@ namespace TMS2.API.Controllers
         [HttpPost]
         public async Task<ActionResult<SensorLog>> PostSensorLog(SensorLog sensorLog)
         {
-          if (_context.SensorLogs == null)
-          {
-              return Problem("Entity set 'Tms2Context.SensorLogs'  is null.");
-          }
+            if (_context.SensorLogs == null)
+            {
+                return Problem("Entity set 'Tms2Context.SensorLogs'  is null.");
+            }
+
             _context.SensorLogs.Add(sensorLog);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSensorLog", new { id = sensorLog.Id }, sensorLog);
+            return CreatedAtAction("GetSensorLog", new {id = sensorLog.Id}, sensorLog);
         }
 
         // DELETE: api/SensorLog/5
@@ -104,6 +108,7 @@ namespace TMS2.API.Controllers
             {
                 return NotFound();
             }
+
             var sensorLog = await _context.SensorLogs.FindAsync(id);
             if (sensorLog == null)
             {
