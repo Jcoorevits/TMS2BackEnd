@@ -52,6 +52,7 @@ namespace TMS2.API.Controllers
 
             return pump;
         }
+
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<Pump> GetPumpById(long id) => await _context.Pumps.Include(x => x.PumpValues)
             .Include(x => x.PumpLogs)
@@ -67,7 +68,79 @@ namespace TMS2.API.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(pump).State = EntityState.Modified;
+            if (pump.SiteChange)
+            {
+                var pumpLogController = new PumpLogController(_context);
+                var sensorController = new SensorController(_context);
+                var sensor = await sensorController.GetOnlySensorById(Convert.ToInt32(pump.SensorId));
+                pump.SiteChange = false;
+                var pumpLog = new PumpLog()
+                {
+                    PumpId = pump.Id,
+                    Date = DateTime.Now,
+                    Error = $"User added {pump.Name} to {sensor.Name}",
+                    PumpValueId = null,
+                    IsDefective = false
+                };
+                await pumpLogController.PostPumpLog(pumpLog);
+                _context.Entry(pump).State = EntityState.Modified;
+            }
+
+            if (pump.SiteDelete)
+            {
+                var pumpLogController = new PumpLogController(_context);
+                var sensorController = new SensorController(_context);
+                var sensor = await sensorController.GetOnlySensorById(Convert.ToInt32(pump.SensorId));
+                pump.SensorId = null;
+                pump.SiteDelete = false;
+                var pumpLog = new PumpLog
+                {
+                    PumpId = pump.Id,
+                    Date = DateTime.Now,
+                    Error = $"User removed {pump.Name} from {sensor.Name}",
+                    PumpValueId = null,
+                    IsDefective = false
+                };
+                await pumpLogController.PostPumpLog(pumpLog);
+
+                _context.Entry(pump).State = EntityState.Modified;
+            }
+
+            if (pump.IsUserInput)
+            {
+                var pumpLogController = new PumpLogController(_context);
+                var pumpLog = new PumpLog
+                {
+                    PumpId = pump.Id,
+                    Date = DateTime.Now,
+                    Error = $"User changed input of {pump.Name} to {pump.InputValue}",
+                    PumpValueId = null,
+                    IsDefective = false
+                };
+
+                await pumpLogController.PostPumpLog(pumpLog);
+
+                _context.Entry(pump).State = EntityState.Modified;
+            }
+
+            if (pump.Repair)
+            {
+                pump.Repair = false;
+                var pumpLogController = new PumpLogController(_context);
+                var pumpLog = new PumpLog
+                {
+                    PumpId = pump.Id,
+                    Date = DateTime.Now,
+                    Error = $"User repaired {pump.Name}",
+                    PumpValueId = null,
+                    IsDefective = false
+                };
+
+                await pumpLogController.PostPumpLog(pumpLog);
+
+                _context.Entry(pump).State = EntityState.Modified;
+            }
+
 
             try
             {
@@ -105,25 +178,25 @@ namespace TMS2.API.Controllers
         }
 
         // DELETE: api/Pump/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePump(long id)
-        {
-            if (_context.Pumps == null)
-            {
-                return NotFound();
-            }
-
-            var pump = await _context.Pumps.FindAsync(id);
-            if (pump == null)
-            {
-                return NotFound();
-            }
-
-            _context.Pumps.Remove(pump);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
+        // [HttpDelete("{id}")]
+        // public async Task<IActionResult> DeletePump(long id)
+        // {
+        //     if (_context.Pumps == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //
+        //     var pump = await _context.Pumps.FindAsync(id);
+        //     if (pump == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //
+        //     _context.Pumps.Remove(pump);
+        //     await _context.SaveChangesAsync();
+        //
+        //     return NoContent();
+        // }
 
         private bool PumpExists(long id)
         {

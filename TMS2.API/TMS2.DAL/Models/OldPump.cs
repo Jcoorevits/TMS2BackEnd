@@ -10,5 +10,10 @@ public class OldPump
     public bool InputValue { get; set; }
     public ICollection<OldPumpValue>? OldPumpValues { get; set; }
     public bool IsDefective { get; set; }
-    public ICollection<PumpLog>? PumpLogs { get; set; }
+    public ICollection<OldPumpLog>? PumpLogs { get; set; }
+    public bool IsUserInput { get; set; }
+    public bool Repair { get; set; }
+    public bool SiteChange { get; set; }
+    public bool SiteDelete { get; set; }
+    public int Calibration { get; set; }
 }

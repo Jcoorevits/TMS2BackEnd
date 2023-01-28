@@ -56,10 +56,17 @@ namespace TMS2.API.Controllers
 
             return sensor;
         }
+
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<Sensor> GetSensorById(long id) => await _context.Sensors.Include(x => x.SensorValues).Include(x => x.SensorLogs)
+        public async Task<Sensor> GetSensorById(long id) => await _context.Sensors.Include(x => x.SensorValues)
+            .Include(x => x.SensorLogs)
             .Include(x => x.Pumps).Include(x => x.OldPumps)
             .FirstOrDefaultAsync(x => x.Id == id);
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<Sensor> GetOnlySensorById(long id) =>
+            await _context.Sensors.FirstOrDefaultAsync(x => x.Id == id);
+
         // PUT: api/Sensor/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -70,7 +77,45 @@ namespace TMS2.API.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(sensor).State = EntityState.Modified;
+            if (sensor.SiteChange)
+            {
+                sensor.SiteChange = false;
+                var sensorLogController = new SensorLogController(_context);
+                var siteController = new SiteController(_context);
+                var site = await siteController.GetSiteById(Convert.ToInt32(sensor.SiteId));
+                var sensorLog = new SensorLog
+                {
+                    SensorId = sensor.Id,
+                    Date = DateTime.Now,
+                    SensorValueId = null,
+                    IsDefective = false,
+                    Error = $"User added {sensor.Name} to {site.Name}"
+                };
+                await sensorLogController.PostSensorLog(sensorLog);
+                _context.Entry(sensor).State = EntityState.Modified;
+            }
+
+
+            if (sensor.SiteDelete)
+            {
+                var sensorLogController = new SensorLogController(_context);
+                var siteController = new SiteController(_context);
+                var site = await siteController.GetSiteById(Convert.ToInt32(sensor.SiteId));
+
+                sensor.SiteDelete = false;
+                sensor.SiteId = null;
+                var sensorLog = new SensorLog
+                {
+                    SensorId = sensor.Id,
+                    Date = DateTime.Now,
+                    SensorValueId = null,
+                    IsDefective = false,
+                    Error = $"User removed {sensor.Name} from {site.Name}"
+                };
+                await sensorLogController.PostSensorLog(sensorLog);
+                _context.Entry(sensor).State = EntityState.Modified;
+            }
+
 
             try
             {

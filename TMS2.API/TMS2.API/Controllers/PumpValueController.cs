@@ -93,14 +93,60 @@ namespace TMS2.API.Controllers
                 return Problem("Entity set 'Tms2Context.PumpValues'  is null.");
             }
 
-            if (pumpValue.Value > 40.0)
+            var pumpController = new PumpController(_context);
+            var pumpLogController = new PumpLogController(_context);
+            var pumpLog = new PumpLog();
+            var pump = await pumpController.GetPumpById(pumpValue.PumpId);
+            long pumpValueId = 0;
+            int calibration = pump.Calibration;
+            double sum = 0;
+            if (pump.IsUserInput)
             {
-                var pumpController = new PumpController(_context);
-                var pump = new Pump();
-                pump = await pumpController.GetPumpById(pumpValue.PumpId);
-                pump.InputValue = 0.0;
-                pump.IsDefective = true;
-                await pumpController.PutPump(pump.Id, pump);
+                pump.Calibration = 5;
+                pump.IsUserInput = false;
+                await pumpController.PutPump(Convert.ToInt32(pump.Id), pump);
+                _context.PumpValues.Add(pumpValue);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetPumpValue", new {id = pumpValue.Id}, pumpValue);
+            }
+
+            if (pump.Calibration > 1)
+            {
+                calibration -= 1;
+                pump.Calibration = calibration;
+                await pumpController.PutPump(Convert.ToInt32(pump.Id), pump);
+                _context.PumpValues.Add(pumpValue);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetPumpValue", new {id = pumpValue.Id}, pumpValue);
+            }
+
+            if (pump.PumpValues != null && pump.PumpValues.Count > 10)
+            {
+                var pumpValueList = pump.PumpValues.OrderByDescending(x => x.Id).Take(4);
+                foreach (var value in pumpValueList)
+                {
+                    if (pumpValueId < value.Id)
+                    {
+                        pumpValueId = value.Id;
+                    }
+
+                    sum += value.Value;
+                }
+
+                var average = sum / pumpValueList.Count();
+                if (pumpValue.Value > average * 1.2 || pumpValue.Value < average * 0.8)
+                {
+                    pump.InputValue = 0.0;
+                    pump.IsDefective = true;
+                    pump.Calibration = 5;
+                    await pumpController.PutPump(Convert.ToInt32(pump.Id), pump);
+                    pumpLog.PumpId = pump.Id;
+                    pumpLog.Date = DateTime.Now;
+                    pumpLog.Error = $"Error detected in {pump.Name}";
+                    pumpLog.IsDefective = true;
+                    pumpLog.PumpValueId = pumpValueId + 1;
+                    await pumpLogController.PostPumpLog(pumpLog);
+                }
             }
 
             _context.PumpValues.Add(pumpValue);

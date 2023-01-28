@@ -55,6 +55,9 @@ namespace TMS2.API.Controllers
 
             return site;
         }
+        
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<Site> GetSiteById(long id) => await _context.Sites.FirstOrDefaultAsync(x => x.Id == id);
 
         // PUT: api/Site/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

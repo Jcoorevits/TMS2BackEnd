@@ -63,7 +63,90 @@ namespace TMS2.API.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(oldPump).State = EntityState.Modified;
+            if (oldPump.SiteChange)
+            {
+           
+                var oldPumpLogController = new OldPumpLogController(_context);
+                var sensorController = new SensorController(_context);
+                var sensor = await sensorController.GetOnlySensorById(Convert.ToInt32(oldPump.SensorId));
+                oldPump.SiteChange = false;
+
+                var oldPumpLog = new OldPumpLog
+                {
+                    OldPumpId = oldPump.Id,
+                    Date = DateTime.Now,
+                    Error = $"User added {oldPump.Name} to {sensor.Name}",
+                    OldPumpValueId = null,
+                    IsDefective = false
+                };
+                await oldPumpLogController.PostOldPumpLog(oldPumpLog);
+
+                _context.Entry(oldPump).State = EntityState.Modified;
+            }
+
+            if (oldPump.SiteDelete)
+            {
+            
+                var oldPumpLogController = new OldPumpLogController(_context);
+                var sensorController = new SensorController(_context);
+                var sensor = await sensorController.GetOnlySensorById(Convert.ToInt32(oldPump.SensorId));
+                oldPump.SiteDelete = false;
+                oldPump.SensorId = null;
+
+                var oldPumpLog = new OldPumpLog
+                {
+                    OldPumpId = oldPump.Id,
+                    Date = DateTime.Now,
+                    Error = $"User removed {oldPump.Name} from {sensor.Name}",
+                    OldPumpValueId = null,
+                    IsDefective = false
+                };
+                await oldPumpLogController.PostOldPumpLog(oldPumpLog);
+
+                _context.Entry(oldPump).State = EntityState.Modified;
+            }
+
+            if (oldPump.IsUserInput)
+            {
+                var oldPumpLogController = new OldPumpLogController(_context);
+                var onOff = "off";
+                if (oldPump.InputValue)
+                {
+                    onOff = "on";
+                }
+
+                var oldPumpLog = new OldPumpLog
+                {
+                    OldPumpId = oldPump.Id,
+                    Date = DateTime.Now,
+                    Error = $"User changed input of {oldPump.Name} to {onOff}",
+                    OldPumpValueId = null,
+                    IsDefective = false
+                };
+
+                await oldPumpLogController.PostOldPumpLog(oldPumpLog);
+
+                _context.Entry(oldPump).State = EntityState.Modified;
+            }
+
+            if (oldPump.Repair)
+            {
+                oldPump.Repair = false;
+                var oldPumpLogController = new OldPumpLogController(_context);
+                var oldPumpLog = new OldPumpLog
+                {
+                    OldPumpId = oldPump.Id,
+                    Date = DateTime.Now,
+                    Error = $"User repaired {oldPump.Name}",
+                    OldPumpValueId = null,
+                    IsDefective = false
+                };
+
+                await oldPumpLogController.PostOldPumpLog(oldPumpLog);
+
+                _context.Entry(oldPump).State = EntityState.Modified;
+            }
+
 
             try
             {
@@ -84,6 +167,11 @@ namespace TMS2.API.Controllers
             return NoContent();
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<OldPump> GetOldPumpById(long id) => await _context.OldPumps.Include(x => x.OldPumpValues)
+            .Include(x => x.OldPumpValues)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
         // POST: api/OldPump
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -100,26 +188,26 @@ namespace TMS2.API.Controllers
             return CreatedAtAction("GetOldPump", new {id = oldPump.Id}, oldPump);
         }
 
-        // DELETE: api/OldPump/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOldPump(long id)
-        {
-            if (_context.OldPumps == null)
-            {
-                return NotFound();
-            }
-
-            var oldPump = await _context.OldPumps.FindAsync(id);
-            if (oldPump == null)
-            {
-                return NotFound();
-            }
-
-            _context.OldPumps.Remove(oldPump);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
+        // // DELETE: api/OldPump/5
+        // [HttpDelete("{id}")]
+        // public async Task<IActionResult> DeleteOldPump(long id)
+        // {
+        //     if (_context.OldPumps == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //
+        //     var oldPump = await _context.OldPumps.FindAsync(id);
+        //     if (oldPump == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //
+        //     _context.OldPumps.Remove(oldPump);
+        //     await _context.SaveChangesAsync();
+        //
+        //     return NoContent();
+        // }
 
         private bool OldPumpExists(long id)
         {

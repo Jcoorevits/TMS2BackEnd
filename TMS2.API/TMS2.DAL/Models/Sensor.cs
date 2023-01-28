@@ -13,6 +13,7 @@ public class Sensor
     public virtual ICollection<SensorLog>? SensorLogs { get; set; }
     public ICollection<Pump>? Pumps { get; set; }
     public ICollection<OldPump>? OldPumps { get; set; }
-    
+    public bool SiteChange { get; set; }
+    public bool SiteDelete { get; set; }
     public int Calibration { get; set; }
 }

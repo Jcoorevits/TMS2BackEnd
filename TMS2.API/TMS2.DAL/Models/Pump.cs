@@ -11,4 +11,9 @@ public class Pump
     public ICollection<PumpValue>? PumpValues { get; set; }
     public bool IsDefective { get; set; }
     public ICollection<PumpLog>? PumpLogs { get; set; }
+    public bool IsUserInput { get; set; }
+    public bool Repair { get; set; }
+    public bool SiteChange { get; set; }
+    public bool SiteDelete { get; set; }
+    public int Calibration { get; set; }
 }

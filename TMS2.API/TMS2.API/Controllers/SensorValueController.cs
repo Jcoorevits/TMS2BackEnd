@@ -104,13 +104,13 @@ namespace TMS2.API.Controllers
             {
                 calibration -= 1;
                 sensor.Calibration = calibration;
-                await sensorController.PutSensor(Convert.ToInt32(sensorValue.Id), sensor);
+                await sensorController.PutSensor(Convert.ToInt32(sensor.Id), sensor);
                 _context.SensorValues.Add(sensorValue);
                 await _context.SaveChangesAsync();
                 return CreatedAtAction("GetSensorValue", new {id = sensorValue.Id}, sensorValue);
             }
 
-            if (sensor.SensorValues != null && sensor.SensorValues.Count > 2)
+            if (sensor.SensorValues != null && sensor.SensorValues.Count > 10)
 
             {
                 var sensorValueList = sensor.SensorValues.OrderByDescending(x => x.Id).Take(4);
@@ -130,10 +130,10 @@ namespace TMS2.API.Controllers
                 if (sensorValue.Value > average * 1.5 || sensorValue.Value < average * 0.5)
                 {
                     sensor.Calibration = 10;
-                    await sensorController.PutSensor(Convert.ToInt32(sensorValue.Id), sensor);
+                    await sensorController.PutSensor(Convert.ToInt32(sensor.Id), sensor);
                     sensorLog.SensorId = sensor.Id;
                     sensorLog.Date = DateTime.Now;
-                    sensorLog.Error = $"Error detected in sensor {sensor.Id}";
+                    sensorLog.Error = $"Error detected in {sensor.Name}";
                     sensorLog.IsDefective = true;
                     sensorLog.SensorValueId = sensorValueId + 1;
                     await sensorLogController.PostSensorLog(sensorLog);

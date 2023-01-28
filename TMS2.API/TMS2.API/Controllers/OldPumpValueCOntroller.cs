@@ -25,10 +25,11 @@ namespace TMS2.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OldPumpValue>>> GetOldPumpValues()
         {
-          if (_context.OldPumpValues == null)
-          {
-              return NotFound();
-          }
+            if (_context.OldPumpValues == null)
+            {
+                return NotFound();
+            }
+
             return await _context.OldPumpValues.ToListAsync();
         }
 
@@ -36,10 +37,11 @@ namespace TMS2.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<OldPumpValue>> GetOldPumpValue(long id)
         {
-          if (_context.OldPumpValues == null)
-          {
-              return NotFound();
-          }
+            if (_context.OldPumpValues == null)
+            {
+                return NotFound();
+            }
+
             var oldPumpValue = await _context.OldPumpValues.FindAsync(id);
 
             if (oldPumpValue == null)
@@ -86,14 +88,71 @@ namespace TMS2.API.Controllers
         [HttpPost]
         public async Task<ActionResult<OldPumpValue>> PostOldPumpValue(OldPumpValue oldPumpValue)
         {
-          if (_context.OldPumpValues == null)
-          {
-              return Problem("Entity set 'Tms2Context.OldPumpValues'  is null.");
-          }
+            if (_context.OldPumpValues == null)
+            {
+                return Problem("Entity set 'Tms2Context.OldPumpValues'  is null.");
+            }
+
+            var oldPumpController = new OldPumpController(_context);
+            var oldPumpLogController = new OldPumpLogController(_context);
+            var oldPumpLog = new OldPumpLog();
+            var oldPump = await oldPumpController.GetOldPumpById(oldPumpValue.OldPumpId);
+            long oldPumpValueId = 0;
+            int calibration = oldPump.Calibration;
+            double sum = 0;
+            if (oldPump.IsUserInput)
+            {
+                oldPump.Calibration = 5;
+                oldPump.IsUserInput = false;
+                await oldPumpController.PutOldPump(Convert.ToInt32(oldPump.Id), oldPump);
+                _context.OldPumpValues.Add(oldPumpValue);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetOldPumpValue", new {id = oldPumpValue.Id}, oldPumpValue);
+            }
+
+            if (oldPump.Calibration > 1)
+            {
+                calibration -= 1;
+                oldPump.Calibration = calibration;
+                await oldPumpController.PutOldPump(Convert.ToInt32(oldPump.Id), oldPump);
+                _context.OldPumpValues.Add(oldPumpValue);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetOldPumpValue", new {id = oldPumpValue.Id}, oldPumpValue);
+            }
+
+            if (oldPump.OldPumpValues != null && oldPump.OldPumpValues.Count > 10)
+            {
+                var oldPumpValueList = oldPump.OldPumpValues.OrderByDescending(x => x.Id).Take(4);
+                foreach (var value in oldPumpValueList)
+                {
+                    if (oldPumpValueId < value.Id)
+                    {
+                        oldPumpValueId = value.Id;
+                    }
+
+                    sum += value.Value;
+                }
+
+                var average = sum / oldPumpValueList.Count();
+                if (oldPumpValue.Value > average * 1.2 || oldPumpValue.Value < average * 0.8)
+                {
+                    oldPump.InputValue = false;
+                    oldPump.IsDefective = true;
+                    oldPump.Calibration = 5;
+                    await oldPumpController.PutOldPump(Convert.ToInt32(oldPump.Id), oldPump);
+                    oldPumpLog.OldPumpId = oldPump.Id;
+                    oldPumpLog.Date = DateTime.Now;
+                    oldPumpLog.Error = $"Error detected in {oldPump.Name}";
+                    oldPumpLog.IsDefective = true;
+                    oldPumpLog.OldPumpValueId = oldPumpValueId + 1;
+                    await oldPumpLogController.PostOldPumpLog(oldPumpLog);
+                }
+            }
+
             _context.OldPumpValues.Add(oldPumpValue);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOldPumpValue", new { id = oldPumpValue.Id }, oldPumpValue);
+            return CreatedAtAction("GetOldPumpValue", new {id = oldPumpValue.Id}, oldPumpValue);
         }
 
         // DELETE: api/OldPumpValueCOntroller/5
@@ -104,6 +163,7 @@ namespace TMS2.API.Controllers
             {
                 return NotFound();
             }
+
             var oldPumpValue = await _context.OldPumpValues.FindAsync(id);
             if (oldPumpValue == null)
             {
