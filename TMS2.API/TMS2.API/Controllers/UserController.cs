@@ -25,26 +25,28 @@ namespace TMS2.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-          if (_context.Users == null)
-          {
-              return NotFound();
-          }
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
+
             return await _context.Users.ToListAsync();
         }
 
         // GET: api/User/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        [HttpGet("{email}")]
+        public async Task<ActionResult<User>> GetUser(string email)
         {
-          if (_context.Users == null)
-          {
-              return NotFound();
-          }
-            var user = await _context.Users.FindAsync(id);
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.Where(x => x.Email == email).FirstOrDefaultAsync();
 
             if (user == null)
             {
-                return NotFound();
+                return null;
             }
 
             return user;
@@ -86,14 +88,15 @@ namespace TMS2.API.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-          if (_context.Users == null)
-          {
-              return Problem("Entity set 'Tms2Context.Users'  is null.");
-          }
+            if (_context.Users == null)
+            {
+                return Problem("Entity set 'Tms2Context.Users'  is null.");
+            }
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction("GetUser", new {id = user.Id}, user);
         }
 
         // DELETE: api/User/5
@@ -104,6 +107,7 @@ namespace TMS2.API.Controllers
             {
                 return NotFound();
             }
+
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {

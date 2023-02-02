@@ -16,4 +16,5 @@ public class Pump
     public bool SiteChange { get; set; }
     public bool SiteDelete { get; set; }
     public int Calibration { get; set; }
+    public bool TawReached { get; set; }
 }

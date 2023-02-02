@@ -133,9 +133,37 @@ namespace TMS2.API.Controllers
                     sum += value.Value;
                 }
 
+                if (pumpValue.FlowRate == 0 && pump.InputValue > 0.0)
+                {
+                    var sendmail = new SendMail.SendMail();
+                    var sensorController = new SensorController(_context);
+                    var siteController = new SiteController(_context);
+                    var sensor = await sensorController.GetOnlySensorById(pumpValue.PumpId);
+                    var site = await siteController.GetSiteById(Convert.ToInt32(sensor.SiteId));
+                    await sendmail.SendError(site.Email, $"An error has occured at {site.Name}",
+                        $"Error detected in {pump.Name}, pump shut down out of precaution because water flow rate has stopped, please check the logs for more information on this problem.");
+                    pump.InputValue = 0.0;
+                    pump.IsDefective = true;
+                    pump.Calibration = 5;
+                    await pumpController.PutPump(Convert.ToInt32(pump.Id), pump);
+                    pumpLog.PumpId = pump.Id;
+                    pumpLog.Date = DateTime.Now;
+                    pumpLog.Error = $"Water flow rate has stopped, {pump.Name} shut down out of precaution";
+                    pumpLog.IsDefective = true;
+                    pumpLog.PumpValueId = pumpValueId + 1;
+                    await pumpLogController.PostPumpLog(pumpLog);
+                }
+
                 var average = sum / pumpValueList.Count();
                 if (pumpValue.Value > average * 1.2 || pumpValue.Value < average * 0.8)
                 {
+                    var sendmail = new SendMail.SendMail();
+                    var sensorController = new SensorController(_context);
+                    var siteController = new SiteController(_context);
+                    var sensor = await sensorController.GetOnlySensorById(pumpValue.PumpId);
+                    var site = await siteController.GetSiteById(Convert.ToInt32(sensor.SiteId));
+                    await sendmail.SendError(site.Email, $"An error has occured at {site.Name}",
+                        $"Error detected in {pump.Name}, please check the logs for more information on this problem.");
                     pump.InputValue = 0.0;
                     pump.IsDefective = true;
                     pump.Calibration = 5;

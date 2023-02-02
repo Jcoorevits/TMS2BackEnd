@@ -94,9 +94,12 @@ namespace TMS2.API.Controllers
             }
 
             var sensorController = new SensorController(_context);
+            var pumpController = new PumpController(_context);
             var sensorLogController = new SensorLogController(_context);
             var sensorLog = new SensorLog();
             var sensor = await sensorController.GetSensorById(sensorValue.SensorId);
+            var siteController = new SiteController(_context);
+            var site = await siteController.GetSiteById(Convert.ToInt32(sensor.SiteId));
             double sum = 0;
             long sensorValueId = 0;
             int calibration = sensor.Calibration;
@@ -127,8 +130,12 @@ namespace TMS2.API.Controllers
                 var average = sum / sensorValueList.Count();
                 sensorValue.Average = average;
 
+
                 if (sensorValue.Value > average * 1.5 || sensorValue.Value < average * 0.5)
                 {
+                    var sendmail = new SendMail.SendMail();
+                    await sendmail.SendError(site.Email, $"An error has occured at {site.Name}",
+                        $"Error detected in {sensor.Name}, please check the logs for more information on this problem.");
                     sensor.Calibration = 10;
                     await sensorController.PutSensor(Convert.ToInt32(sensor.Id), sensor);
                     sensorLog.SensorId = sensor.Id;
@@ -137,6 +144,36 @@ namespace TMS2.API.Controllers
                     sensorLog.IsDefective = true;
                     sensorLog.SensorValueId = sensorValueId + 1;
                     await sensorLogController.PostSensorLog(sensorLog);
+                }
+                else
+                {
+                    if (sensor.Pumps != null)
+                    {
+                        if (sensorValue.Value < site.DrainageDepth)
+                        {
+                            foreach (var pump in sensor.Pumps)
+                            {
+                                if (!pump.TawReached)
+                                {
+                                    sensorLog.SensorId = sensor.Id;
+                                    sensorLog.Date = DateTime.Now;
+                                    sensorLog.Error =
+                                        $"{sensor.Name} has reached the desired drainage depth. The value of {pump.Name} located around {sensor.Name} has been lowered by 25%.";
+                                    sensorLog.IsDefective = true;
+                                    sensorLog.SensorValueId = sensorValueId + 1;
+                                    await sensorLogController.PostSensorLog(sensorLog);
+                                    var sendmail = new SendMail.SendMail();
+                                    await sendmail.SendError(site.Email,
+                                        $"You have reached your desired drainage depth at {site.Name}",
+                                        $"{sensor.Name} has reached the desired drainage depth. The value of {pump.Name} located around {sensor.Name} has been lowered by 25%.");
+                                    pump.TawReached = true;
+                                    pump.InputValue *= 0.75;
+                                    pump.IsUserInput = true;
+                                    await pumpController.PutPump(pump.Id, pump);
+                                }
+                            }
+                        }
+                    }
                 }
             }
 

@@ -133,9 +133,37 @@ namespace TMS2.API.Controllers
                     sum += value.Value;
                 }
 
+                if (oldPumpValue.FlowRate == 0 && oldPump.InputValue == true)
+                {
+                    var sendmail = new SendMail.SendMail();
+                    var sensorController = new SensorController(_context);
+                    var siteController = new SiteController(_context);
+                    var sensor = await sensorController.GetOnlySensorById(oldPumpValue.OldPumpId);
+                    var site = await siteController.GetSiteById(Convert.ToInt32(sensor.SiteId));
+                    await sendmail.SendError(site.Email, $"An error has occured at {site.Name}",
+                        $"Error detected in {oldPump.Name}, pump shut down out of precaution because water flow rate has stopped please check the logs for more information on this problem.");
+                    oldPump.InputValue = false;
+                    oldPump.IsDefective = true;
+                    oldPump.Calibration = 5;
+                    await oldPumpController.PutOldPump(Convert.ToInt32(oldPump.Id), oldPump);
+                    oldPumpLog.OldPumpId = oldPump.Id;
+                    oldPumpLog.Date = DateTime.Now;
+                    oldPumpLog.Error = $"Water flow rate has stopped, {oldPump.Name} shut down out of precaution";
+                    oldPumpLog.IsDefective = true;
+                    oldPumpLog.OldPumpValueId = oldPumpValueId + 1;
+                    await oldPumpLogController.PostOldPumpLog(oldPumpLog);
+                }
+
                 var average = sum / oldPumpValueList.Count();
                 if (oldPumpValue.Value > average * 1.2 || oldPumpValue.Value < average * 0.8)
                 {
+                    var sendmail = new SendMail.SendMail();
+                    var sensorController = new SensorController(_context);
+                    var siteController = new SiteController(_context);
+                    var sensor = await sensorController.GetOnlySensorById(oldPumpValue.OldPumpId);
+                    var site = await siteController.GetSiteById(Convert.ToInt32(sensor.SiteId));
+                    await sendmail.SendError(site.Email, $"An error has occured at {site.Name}",
+                        $"Error detected in {oldPump.Name}, please check the logs for more information on this problem.");
                     oldPump.InputValue = false;
                     oldPump.IsDefective = true;
                     oldPump.Calibration = 5;
