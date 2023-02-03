@@ -33,9 +33,27 @@ namespace TMS2.API.Controllers
             return await _context.Users.ToListAsync();
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<User>> GetUser(int id)
+        {
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return user;
+        }
+
         // GET: api/User/5
         [HttpGet("{email}")]
-        public async Task<ActionResult<User>> GetUser(string email)
+        public async Task<ActionResult<User>> GetUserByEmail(string email)
         {
             if (_context.Users == null)
             {

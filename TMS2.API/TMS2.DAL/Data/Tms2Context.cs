@@ -44,31 +44,30 @@ namespace TMS2.DAL.Data
 
             modelBuilder.Entity<User>().HasData(new User
                 {
-                    Id = 1, Name = "testy", Email = "korani9145@ekcsoft.com", IsAdmin = true
-                },
-                new User
+                    Id = 1, Name = "Frederik Mostmans", Email = "frederik.mostmans@hooyberghsbouw.be", IsAdmin = true
+                },new User
                 {
-                    Id = 2, Name = "test", Email = "fihimeb599@ezgiant.com", IsAdmin = false
+                    Id = 2, Name = "Jeremy Coorevits", Email = "dejasod659@ekcsoft.com", IsAdmin = true
                 });
             modelBuilder.Entity<Pump>().HasData(
                 new Pump
                 {
-                    Id = 1, Name = "Pump 1", SensorId = 1, InputValue = 0.0, IsDefective = false, IsUserInput = false,
+                    Id = 1, Name = "Pump 1",  InputValue = 0.0, IsDefective = false, IsUserInput = false,
                     Calibration = 0, SiteChange = false, SiteDelete = false, TawReached = false
                 },
                 new Pump
                 {
-                    Id = 2, Name = "Pump 2", SensorId = 1, InputValue = 0.0, IsDefective = false, IsUserInput = false,
+                    Id = 2, Name = "Pump 2",  InputValue = 0.0, IsDefective = false, IsUserInput = false,
                     Calibration = 0, SiteChange = false, SiteDelete = false, TawReached = false
                 },
                 new Pump
                 {
-                    Id = 3, Name = "Pump 3", SensorId = 2, InputValue = 0.0, IsDefective = false, IsUserInput = false,
+                    Id = 3, Name = "Pump 3",  InputValue = 0.0, IsDefective = false, IsUserInput = false,
                     Calibration = 0, SiteChange = false, SiteDelete = false, TawReached = false
                 },
                 new Pump
                 {
-                    Id = 4, Name = "Pump 4", SensorId = 2, InputValue = 0.0, IsDefective = false, IsUserInput = false,
+                    Id = 4, Name = "Pump 4",  InputValue = 0.0, IsDefective = false, IsUserInput = false,
                     Calibration = 0, SiteChange = false, SiteDelete = false, TawReached = false
                 },
                 new Pump
@@ -94,12 +93,12 @@ namespace TMS2.DAL.Data
             modelBuilder.Entity<OldPump>().HasData(
                 new OldPump
                 {
-                    Id = 1, Name = "Old Pump 1", SensorId = 2, InputValue = false, IsDefective = false,
+                    Id = 1, Name = "Old Pump 1",  InputValue = false, IsDefective = false,
                     IsUserInput = false, Calibration = 0, SiteChange = false, SiteDelete = false
                 },
                 new OldPump
                 {
-                    Id = 2, Name = "Old Pump 2", SensorId = 2, InputValue = false, IsDefective = false,
+                    Id = 2, Name = "Old Pump 2",  InputValue = false, IsDefective = false,
                     IsUserInput = false, Calibration = 0, SiteChange = false, SiteDelete = false
                 },
                 new OldPump
@@ -116,12 +115,12 @@ namespace TMS2.DAL.Data
             modelBuilder.Entity<Sensor>().HasData(
                 new Sensor
                 {
-                    Id = 1, Name = "Sensor 1", SiteId = 1, IsDefective = false, Calibration = 0, SiteChange = false,
+                    Id = 1, Name = "Sensor 1",  IsDefective = false, Calibration = 0, SiteChange = false,
                     SiteDelete = false
                 },
                 new Sensor
                 {
-                    Id = 2, Name = "Sensor 2", SiteId = 1, IsDefective = false, Calibration = 0, SiteChange = false,
+                    Id = 2, Name = "Sensor 2",  IsDefective = false, Calibration = 0, SiteChange = false,
                     SiteDelete = false
                 },
                 new Sensor
@@ -155,13 +154,13 @@ namespace TMS2.DAL.Data
                     SiteDelete = false
                 });
 
-            modelBuilder.Entity<Site>().HasData(new Site
+            /*modelBuilder.Entity<Site>().HasData(new Site
             {
                 Id = 1, Name = "Test Site", Email = "r0840937@student.thomasmore.be", Address = "Antwerpen",
                 SiteManager = "Frederik Mostmans",
                 SiteManagerNbr = "0123456789", SensorDepth = 280.0,
                 DrainageDepth = 70.0
-            });
+            });*/
             // modelBuilder.Entity<SensorValue>().HasData(new SensorValue
             // {
             //     Id = 1, SensorId = 1, Value = 20.0, Date = DateTime.Now

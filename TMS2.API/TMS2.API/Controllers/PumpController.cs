@@ -78,11 +78,12 @@ namespace TMS2.API.Controllers
                 {
                     PumpId = pump.Id,
                     Date = DateTime.Now,
-                    Error = $"User added {pump.Name} to {sensor.Name}",
+                    Error = $"{pump.User} added {pump.Name} to {sensor.Name}",
                     PumpValueId = null,
                     IsDefective = false
                 };
                 await pumpLogController.PostPumpLog(pumpLog);
+                pump.User = null;
                 _context.Entry(pump).State = EntityState.Modified;
             }
 
@@ -97,12 +98,12 @@ namespace TMS2.API.Controllers
                 {
                     PumpId = pump.Id,
                     Date = DateTime.Now,
-                    Error = $"User removed {pump.Name} from {sensor.Name}",
+                    Error = $"{pump.User} removed {pump.Name} from {sensor.Name}",
                     PumpValueId = null,
                     IsDefective = false
                 };
                 await pumpLogController.PostPumpLog(pumpLog);
-
+                pump.User = null;
                 _context.Entry(pump).State = EntityState.Modified;
             }
 
@@ -113,13 +114,13 @@ namespace TMS2.API.Controllers
                 {
                     PumpId = pump.Id,
                     Date = DateTime.Now,
-                    Error = $"User changed input of {pump.Name} to {pump.InputValue}",
+                    Error = $"{pump.User} changed input of {pump.Name} to {pump.InputValue}",
                     PumpValueId = null,
                     IsDefective = false
                 };
 
                 await pumpLogController.PostPumpLog(pumpLog);
-
+                pump.User = null;
                 _context.Entry(pump).State = EntityState.Modified;
             }
 
@@ -131,13 +132,13 @@ namespace TMS2.API.Controllers
                 {
                     PumpId = pump.Id,
                     Date = DateTime.Now,
-                    Error = $"User repaired {pump.Name}",
+                    Error = $"{pump.User} repaired {pump.Name}",
                     PumpValueId = null,
                     IsDefective = false
                 };
 
                 await pumpLogController.PostPumpLog(pumpLog);
-
+                pump.User = null;
                 _context.Entry(pump).State = EntityState.Modified;
             }
 

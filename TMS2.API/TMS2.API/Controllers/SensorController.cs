@@ -89,9 +89,10 @@ namespace TMS2.API.Controllers
                     Date = DateTime.Now,
                     SensorValueId = null,
                     IsDefective = false,
-                    Error = $"User added {sensor.Name} to {site.Name}"
+                    Error = $"{sensor.User} added {sensor.Name} to {site.Name}"
                 };
                 await sensorLogController.PostSensorLog(sensorLog);
+                sensor.User = null;
                 _context.Entry(sensor).State = EntityState.Modified;
             }
 
@@ -110,9 +111,10 @@ namespace TMS2.API.Controllers
                     Date = DateTime.Now,
                     SensorValueId = null,
                     IsDefective = false,
-                    Error = $"User removed {sensor.Name} from {site.Name}"
+                    Error = $"{sensor.User} removed {sensor.Name} from {site.Name}"
                 };
                 await sensorLogController.PostSensorLog(sensorLog);
+                sensor.User = null;
                 _context.Entry(sensor).State = EntityState.Modified;
             }
 

@@ -75,12 +75,12 @@ namespace TMS2.API.Controllers
                 {
                     OldPumpId = oldPump.Id,
                     Date = DateTime.Now,
-                    Error = $"User added {oldPump.Name} to {sensor.Name}",
+                    Error = $"{oldPump.User} added {oldPump.Name} to {sensor.Name}",
                     OldPumpValueId = null,
                     IsDefective = false
                 };
                 await oldPumpLogController.PostOldPumpLog(oldPumpLog);
-
+                oldPump.User = null;
                 _context.Entry(oldPump).State = EntityState.Modified;
             }
 
@@ -97,12 +97,12 @@ namespace TMS2.API.Controllers
                 {
                     OldPumpId = oldPump.Id,
                     Date = DateTime.Now,
-                    Error = $"User removed {oldPump.Name} from {sensor.Name}",
+                    Error = $"{oldPump.User} removed {oldPump.Name} from {sensor.Name}",
                     OldPumpValueId = null,
                     IsDefective = false
                 };
                 await oldPumpLogController.PostOldPumpLog(oldPumpLog);
-
+                oldPump.User = null;
                 _context.Entry(oldPump).State = EntityState.Modified;
             }
 
@@ -119,13 +119,13 @@ namespace TMS2.API.Controllers
                 {
                     OldPumpId = oldPump.Id,
                     Date = DateTime.Now,
-                    Error = $"User changed input of {oldPump.Name} to {onOff}",
+                    Error = $"{oldPump.User} changed input of {oldPump.Name} to {onOff}",
                     OldPumpValueId = null,
                     IsDefective = false
                 };
 
                 await oldPumpLogController.PostOldPumpLog(oldPumpLog);
-
+                oldPump.User = null;
                 _context.Entry(oldPump).State = EntityState.Modified;
             }
 
@@ -137,13 +137,13 @@ namespace TMS2.API.Controllers
                 {
                     OldPumpId = oldPump.Id,
                     Date = DateTime.Now,
-                    Error = $"User repaired {oldPump.Name}",
+                    Error = $"{oldPump.User} repaired {oldPump.Name}",
                     OldPumpValueId = null,
                     IsDefective = false
                 };
 
                 await oldPumpLogController.PostOldPumpLog(oldPumpLog);
-
+                oldPump.User = null;
                 _context.Entry(oldPump).State = EntityState.Modified;
             }
 

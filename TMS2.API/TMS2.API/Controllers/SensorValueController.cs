@@ -159,7 +159,7 @@ namespace TMS2.API.Controllers
                                     sensorLog.Date = DateTime.Now;
                                     sensorLog.Error =
                                         $"{sensor.Name} has reached the desired drainage depth of {site.DrainageDepth} cm above the sensor depth. The value of {pump.Name} located around {sensor.Name} has been lowered by 25%.";
-                                    sensorLog.IsDefective = true;
+                                    sensorLog.IsDefective = false;
                                     sensorLog.SensorValueId = sensorValueId + 1;
                                     await sensorLogController.PostSensorLog(sensorLog);
                                     var sendmail = new SendMail.SendMail();

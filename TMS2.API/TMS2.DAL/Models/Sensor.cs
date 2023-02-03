@@ -16,4 +16,5 @@ public class Sensor
     public bool SiteChange { get; set; }
     public bool SiteDelete { get; set; }
     public int Calibration { get; set; }
+    public string? User { get; set; }
 }
