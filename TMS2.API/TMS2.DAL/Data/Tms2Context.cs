@@ -47,7 +47,7 @@ namespace TMS2.DAL.Data
                     Id = 1, Name = "Frederik Mostmans", Email = "frederik.mostmans@hooyberghsbouw.be", IsAdmin = true
                 },new User
                 {
-                    Id = 2, Name = "Jeremy Coorevits", Email = "dejasod659@ekcsoft.com", IsAdmin = true
+                    Id = 2, Name = "Jeremy Coorevits", Email = "sekil40722@ngopy.com", IsAdmin = true
                 });
             modelBuilder.Entity<Pump>().HasData(
                 new Pump

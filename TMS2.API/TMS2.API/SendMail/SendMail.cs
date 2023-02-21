@@ -7,17 +7,17 @@ public class SendMail
 {
     public async Task SendError(string toAddress, string subject, string body)
     {
-        const string smtpServer = "smtp-relay.sendinblue.com";
+        const string smtpServer = "smtp-auth.mailprotect.be";
         const int smtpPort = 587;
-        const string smtpUsername = "jonashacker7@gmail.com";
-        const string smtpPassword = "RY9v06yWkw2EGMTH";
+        const string smtpUsername = "application.hooyberghs@jeremycoorevits.be";
+        const string smtpPassword = "Admin123!";
 
         using (SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort))
         {
             smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
             smtpClient.EnableSsl = true;
 
-            using (MailMessage message = new MailMessage("application@hooyberghs.be", toAddress, subject, body))
+            using (MailMessage message = new MailMessage("application.hooyberghs@jeremycoorevits.be", toAddress, subject, body))
             {
                 await smtpClient.SendMailAsync(message);
             }
